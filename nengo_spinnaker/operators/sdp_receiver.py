@@ -27,6 +27,10 @@ class SDPReceiver(object):
     def __str__(self):
         return self.__repr__()
 
+    @property
+    def label(self):
+        return self._label
+
     def make_vertices(self, model, *args, **kwargs):
         """Create vertices that will simulate the SDPReceiver."""
         # NOTE This approach will result in more routes being created than are

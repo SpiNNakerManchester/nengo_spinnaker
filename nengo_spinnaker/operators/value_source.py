@@ -18,7 +18,7 @@ from nengo_spinnaker.utils.type_casts import np_to_fix
 
 class ValueSource(object):
     """Operator which transmits values from a buffer."""
-    def __init__(self, function, size_out, period):
+    def __init__(self, function, size_out, period, label):
         """Create a new source which evaluates the given function over a period
         of time.
         """
@@ -29,7 +29,18 @@ class ValueSource(object):
         # Vertices
         self.system_region = None
         self.keys_region = None
+        self._label = label
         self.vertices = list()
+
+    @property
+    def label(self):
+        return self._label
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self._label
 
     def make_vertices(self, model, n_steps):
         """Create the vertices to be simulated on the machine."""

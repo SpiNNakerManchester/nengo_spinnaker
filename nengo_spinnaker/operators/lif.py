@@ -72,7 +72,7 @@ RoutingRegions = (Regions.input_routing,
 
 class EnsembleLIF(object):
     """Controller for an ensemble of LIF neurons."""
-    def __init__(self, ensemble):
+    def __init__(self, ensemble, label):
         """Create a new LIF ensemble controller."""
         self.ensemble = ensemble
         self.direct_input = np.zeros(ensemble.size_in)
@@ -82,6 +82,17 @@ class EnsembleLIF(object):
         self.record_spikes = False
         self.record_voltages = False
         self.record_encoders = False
+        self._label = label
+
+    @property
+    def label(self):
+        return self._label
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self._label
 
     def make_vertices(self, model, n_steps):
         """Construct the data which can be loaded into the memory of a

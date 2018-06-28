@@ -135,7 +135,7 @@ class NodeIOController(object):
             else:
                 period = model.dt
 
-            vs = ValueSource(node.output, node.size_out, period)
+            vs = ValueSource(node.output, node.size_out, period, node.label)
             self._f_of_t_nodes[node] = vs
             model.object_operators[node] = vs
         else:

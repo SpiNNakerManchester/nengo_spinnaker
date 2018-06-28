@@ -909,6 +909,10 @@ class PassthroughNode(object):
     def __init__(self, label=None):
         self._label = label
 
+    @property
+    def label(self):
+        return self._label
+
     def __repr__(self):
         return "PassthroughNode({})".format(self._label)
 

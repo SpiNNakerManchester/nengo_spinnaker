@@ -206,8 +206,6 @@ class Model(object):
         with self.decoder_cache:
             self._build_network(network)
 
-        print self.connection_map._connections
-
     def add_transposters(self):
         # Insert interposers
         interposers, connection_map = \
@@ -268,7 +266,16 @@ class Model(object):
         # Get the source and sink specification, then make the signal provided
         # that neither of specs is None.
         source = self._source_getters[pre_type](self, conn)
+
+        if source.target[0].label == 'sdp receiver app vertex for nengo node ' \
+                               'stim_keys':
+            sink = self._sink_getters[post_type](self, conn)
+        if source.target[0].label == 'sdp receiver app vertex for nengo node ' \
+                                  'learning':
+            sink = self._sink_getters[post_type](self, conn)
+
         sink = self._sink_getters[post_type](self, conn)
+
 
         if not (source is None or sink is None):
             # Construct the signal parameters
