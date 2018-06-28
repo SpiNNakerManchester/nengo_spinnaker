@@ -39,15 +39,19 @@ T = period*num_items*2
 # Model network
 model = nengo.Network()
 with model:
-
     # Create the inputs/outputs
-    stim_keys = nengo.Node(output=cycle_array(keys, period, dt))
-    stim_values = nengo.Node(output=cycle_array(values, period, dt))
-    learning = nengo.Node(output=lambda t: -int(t>=T/2))
-    recall = nengo.Node(size_in=d_value)
+    stim_keys = nengo.Node(output=cycle_array(keys, period, dt),
+                           label="stim_keys")
+    stim_values = nengo.Node(output=cycle_array(values, period, dt),
+                             label="stim_values")
+    learning = nengo.Node(output=lambda t: -int(t >= T / 2),
+                          label="learning")
+    recall = nengo.Node(size_in=d_value, label="recall")
 
     # Create the memory
-    memory = nengo.Ensemble(n_neurons, d_key, intercepts=[intercept]*n_neurons)
+    memory = nengo.Ensemble(n_neurons, d_key,
+                            intercepts=[intercept] * n_neurons,
+                            label="memory")
 
     # Learn the encoders/keys
     voja = nengo.Voja(post_tau=None, learning_rate=5e-2)
@@ -56,12 +60,14 @@ with model:
     nengo.Connection(learning, conn_in.learning_rule, synapse=None)
 
     # Learn the decoders/values, initialized to a null function
-    conn_out = nengo.Connection(memory, recall, learning_rule_type=nengo.PES(1e-3),
+    conn_out = nengo.Connection(memory, recall,
+                                learning_rule_type=nengo.PES(1e-3),
                                 function=lambda x: np.zeros(d_value))
 
     # Create the error population
-    error = nengo.Ensemble(n_neurons, d_value)
-    nengo.Connection(learning, error.neurons, transform=[[10.0]]*n_neurons,
+    error = nengo.Ensemble(n_neurons, d_value, label="error")
+    nengo.Connection(learning, error.neurons,
+                     transform=[[10.0]] * n_neurons,
                      synapse=None)
 
     # Calculate the error and use it to drive the PES rule
@@ -70,14 +76,15 @@ with model:
     nengo.Connection(error, conn_out.learning_rule)
 
     # Setup probes
-    p_keys = nengo.Probe(stim_keys, synapse=None)
-    p_values = nengo.Probe(stim_values, synapse=None)
-    p_learning = nengo.Probe(learning, synapse=None)
-    p_error = nengo.Probe(error, synapse=0.005)
-    p_recall = nengo.Probe(recall, synapse=None)
+    p_keys = nengo.Probe(stim_keys, synapse=None, label="p_keys")
+    p_values = nengo.Probe(stim_values, synapse=None, label="p_values")
+    p_learning = nengo.Probe(learning, synapse=None, label="p_learning")
+    p_error = nengo.Probe(error, synapse=0.005, label="p_error")
+    p_recall = nengo.Probe(recall, synapse=None, label="p_recall")
 
     if record_encoders:
-        p_encoders = nengo.Probe(conn_in.learning_rule, 'scaled_encoders')
+        p_encoders = nengo.Probe(conn_in.learning_rule,
+                                 'scaled_encoders', label="p_encoders")
 
 if spinnaker:
     sim = nengo_spinnaker.Simulator(model)

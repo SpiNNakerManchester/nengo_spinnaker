@@ -52,7 +52,9 @@ class Ethernet(NodeIOController):
         """
         # Create a new SDPReceiver if there isn't already one for the Node
         if connection.pre_obj not in self._sdp_receivers:
-            receiver = SDPReceiver()
+            receiver = SDPReceiver(
+                label="sdp receiver app vertex for nengo node {}".format(
+                    connection.pre_obj.label))
             self._sdp_receivers[connection.pre_obj] = receiver
             model.extra_operators.append(receiver)
 

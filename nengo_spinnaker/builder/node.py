@@ -116,6 +116,8 @@ class NodeIOController(object):
             getconfig(model.config, node, "function_of_time", False)
         )
 
+        x = getconfig(model.config, node, "function_of_time", False)
+
         if node.output is None:
             # If the Node is a passthrough Node then create a new placeholder
             # for the passthrough node.
@@ -319,6 +321,7 @@ class InputNode(nengo.Node):
         """This should ask the controller for the input value for the target
         Node.
         """
+        print "handling input"
         with self.controller.node_input_lock:
             return self.controller.node_input[self.target]
 

@@ -51,6 +51,8 @@ class Simulator(object):
     def __init__(self, network, dt=0.001, period=10.0, timescale=1.0,
                  hostname=None, use_spalloc=None,
                  allocation_fudge_factor=0.6):
+
+        logging.basicConfig(level=logging.DEBUG)
         """Create a new Simulator with the given network.
 
         Parameters
@@ -110,6 +112,20 @@ class Simulator(object):
         self.model = Model(dt=dt, machine_timestep=machine_timestep,
                            decoder_cache=get_default_decoder_cache())
         self.model.build(network, **builder_kwargs)
+        self.model.add_transposters()
+
+        print "nengo obj map"
+        for nengo_obj in self.model.object_operators:
+            print "{}:{}".format(nengo_obj, self.model.object_operators[
+                nengo_obj])
+        for nengo_obj in self.model.extra_operators:
+            print "{}".format(nengo_obj)
+        for nengo_obj in self.io_controller._sdp_receivers:
+            print "{}:{}".format(nengo_obj,
+                                 self.io_controller._sdp_receivers[nengo_obj])
+        for nengo_obj in self.io_controller._sdp_transmitters:
+            print "{}:{}".format(nengo_obj,
+                                 self.io_controller._sdp_transmitters[nengo_obj])
 
         logger.info("Build took {:.3f} seconds".format(time.time() -
                                                        start_build))

@@ -39,7 +39,7 @@ with model:
 # Create a SpiNNaker simulator and run model
 sim = nengo_spinnaker.Simulator(model)
 with sim:
-    sim.run(10.0)
+    sim.run_steps(None)
 
 # Read profiler data
 profiler_data = sim.profiler_data[pre]

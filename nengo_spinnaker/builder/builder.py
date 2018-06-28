@@ -206,6 +206,9 @@ class Model(object):
         with self.decoder_cache:
             self._build_network(network)
 
+        print self.connection_map._connections
+
+    def add_transposters(self):
         # Insert interposers
         interposers, connection_map = \
             self.connection_map.insert_and_stack_interposers()
@@ -213,7 +216,9 @@ class Model(object):
         self.connection_map = connection_map
 
     def _build_network(self, network):
+
         # Get the seed for the network
+        np.random.seed(1234)
         self.seeds[network] = get_seed(network, np.random)
 
         # Build all subnets
@@ -337,6 +342,7 @@ class Model(object):
 
         for op in itertools.chain(itervalues(self.object_operators),
                                   self.extra_operators):
+
             # If the operator is a passthrough Node then skip it
             if isinstance(op, model.PassthroughNode):
                 continue

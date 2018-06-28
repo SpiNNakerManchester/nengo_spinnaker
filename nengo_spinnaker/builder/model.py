@@ -286,8 +286,8 @@ class ConnectionMap(object):
 
         return interposers, cm
 
-    def _copy_connections_from_source(self, source, target_map,
-                                      interposers=dict()):
+    def _copy_connections_from_source(
+            self, source, target_map, interposers):
         """Copy the pattern of connectivity from a source object, inserting the
         determined connectivity into a new connection map instance and
         inserting connections to interposers as appropriate.
@@ -752,6 +752,12 @@ class SignalParameters(object):
         self.latching = latching
         self.weight = weight
         self.keyspace = keyspace
+
+    def __repr__(self):
+        return "{}:{}:{}".format(self.latching, self.weight, self.keyspace)
+
+    def __str__(self):
+        return self.__repr__()
 
     def __hash__(self):
         return hash((self.latching, self.weight))

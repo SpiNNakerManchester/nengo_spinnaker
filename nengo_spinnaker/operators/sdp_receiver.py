@@ -14,11 +14,18 @@ class SDPReceiver(object):
     """An operator which receives SDP packets and transmits the contained data
     as a stream of multicast packets.
     """
-    def __init__(self):
+    def __init__(self, label):
         # Create a mapping of which connection is broadcast by which vertex
         self.connection_vertices = dict()
         self._sys_regions = dict()
         self._key_regions = dict()
+        self._label = label
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self.__repr__()
 
     def make_vertices(self, model, *args, **kwargs):
         """Create vertices that will simulate the SDPReceiver."""
