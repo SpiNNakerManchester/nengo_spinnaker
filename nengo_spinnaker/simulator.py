@@ -112,7 +112,7 @@ class Simulator(object):
         self.model = Model(dt=dt, machine_timestep=machine_timestep,
                            decoder_cache=get_default_decoder_cache())
         self.model.build(network, **builder_kwargs)
-        self.model.add_transposters()
+        self.model.add_interposers()
 
         print "nengo obj map"
         for nengo_obj in self.model.object_operators:

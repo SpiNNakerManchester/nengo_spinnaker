@@ -810,6 +810,12 @@ class ReceptionParameters(namedtuple("ReceptionParameters",
     width : int
         Width of the post object
     """
+    def __repr__(self):
+        return "{}:{}:{}".format(self.filter, self.width, self.learning_rule)
+
+    def __str__(self):
+        return self.__repr__()
+
     def concat(self, other):
         """Create new reception parameters by combining this set of reception
         parameters with another.

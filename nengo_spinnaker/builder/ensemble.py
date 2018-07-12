@@ -277,7 +277,8 @@ def build_ensemble_probe(model, probe):
     """Build a Probe which has an Ensemble as its target."""
     if probe.attr == "decoded_output":
         # Create an object to receive the probed data
-        model.object_operators[probe] = operators.ValueSink(probe, model.dt)
+        model.object_operators[probe] = operators.ValueSink(probe, model.dt,
+                                                            probe.target.label)
 
         # Create a new connection from the ensemble to the probe
         seed = model.seeds[probe]

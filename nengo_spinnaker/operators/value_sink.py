@@ -34,7 +34,7 @@ class ValueSink(object):
     sample_every : int
         Number of machine timesteps between taking samples.
     """
-    def __init__(self, probe, dt, max_width=16):
+    def __init__(self, probe, dt, label, max_width=16):
         self.probe = probe
         self.size_in = probe.size_in
         self.max_width = max_width
@@ -44,6 +44,17 @@ class ValueSink(object):
             self.sample_every = 1
         else:
             self.sample_every = int(np.round(probe.sample_every / dt))
+        self._label =label
+
+    @property
+    def label(self):
+        return self._label
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self._label
 
     def make_vertices(self, model, n_steps):  # TODO remove n_steps
         """Construct the data which can be loaded into the memory of a

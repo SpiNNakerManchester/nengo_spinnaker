@@ -206,7 +206,7 @@ class Model(object):
         with self.decoder_cache:
             self._build_network(network)
 
-    def add_transposters(self):
+    def add_interposers(self):
         # Insert interposers
         interposers, connection_map = \
             self.connection_map.insert_and_stack_interposers()

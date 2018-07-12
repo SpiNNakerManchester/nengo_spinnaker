@@ -58,6 +58,14 @@ class Transform(object):
         self.transform = np.array(transform, order='C')
         self.transform.flags["WRITEABLE"] = False
 
+    def __repr__(self):
+        return "{}:{}:{}:{}:{}".format(self.size_in, self.size_out,
+                                          self.slice_in, self.slice_out,
+                                          self.transform)
+
+    def __str__(self):
+        return self.__repr__()
+
     @staticmethod
     def _get_slice_as_ndarray(sl, size):
         """Return a slice as a read-only Numpy array."""
@@ -297,6 +305,13 @@ class TransmissionParameters(object):
 class PassthroughNodeTransmissionParameters(TransmissionParameters):
     """Parameters describing information transmitted by a passthrough node.
     """
+
+    def __repr__(self):
+        return "{}".format(self._transform)
+
+    def __str__(self):
+        return self.__repr__()
+
     def concat(self, other):
         """Create new connection parameters which are the result of
         concatenating this connection several others.
@@ -384,6 +399,13 @@ class EnsembleTransmissionParameters(TransmissionParameters):
         # Store the learning rule
         self.learning_rule = learning_rule
 
+    def __repr__(self):
+        return "{}:{}:{}".format(
+            self._transform, self.decoders, self.learning_rule)
+
+    def __str__(self):
+        return self.__repr__()
+
     def __eq__(self, other):
         # Two parameters are equal only if they are of the same type, both have
         # no learning rule and are equivalent in all other fields.
@@ -461,6 +483,12 @@ class NodeTransmissionParameters(TransmissionParameters):
         super(NodeTransmissionParameters, self).__init__(transform)
         self.pre_slice = pre_slice
         self.function = function
+
+    def __repr__(self):
+        return "{}:{}:{}".format(self._transform, self.pre_slice, self.function)
+
+    def __str__(self):
+        return self.__repr__()
 
     def __eq__(self, other):
         return (super(NodeTransmissionParameters, self).__eq__(other) and
