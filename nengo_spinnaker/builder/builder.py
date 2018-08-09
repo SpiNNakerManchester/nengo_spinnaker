@@ -144,7 +144,7 @@ class Model(object):
 
         # Model data
         self.config = None
-        self.object_operators = dict()
+        self.object_operators = collections.OrderedDict()
         self.extra_operators = list()
         self.connection_map = model.ConnectionMap()
         self._incoming_signals = None
