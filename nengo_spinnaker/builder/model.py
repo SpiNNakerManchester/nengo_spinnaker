@@ -907,6 +907,12 @@ class Signal(object):
     def width(self):
         return self.weight
 
+    def __repr__(self):
+        return "{}:{}:{}".format(self.source, self.sinks, self._params)
+
+    def __str__(self):
+        return self.__repr__()
+
 
 class PassthroughNode(object):
     """A non-computational node which will be optimised out of the model but
