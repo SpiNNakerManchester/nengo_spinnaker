@@ -77,7 +77,8 @@ def get_nets_for_routing(resources, nets, placements, allocations):
             # Create a new Rig Net using the new start vertex; add the new Net
             # to the dictionary of derived nets and the list of nets with which
             # to perform routing.
-            new_net = rig.netlist.Net(vertex, net.sinks, net.weight)
+            new_net = rig.netlist.Net(vertex, net.sinks, net.weight,
+                                      net.sources[0]._label)
             routing_nets.append(new_net)
             derived_nets[net][placement] = new_net
 

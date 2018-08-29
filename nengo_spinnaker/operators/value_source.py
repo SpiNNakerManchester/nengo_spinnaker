@@ -31,7 +31,6 @@ class ValueSource(object):
         self.keys_region = None
         self._label = label
         self.vertices = list()
-
     @property
     def label(self):
         return self._label
@@ -93,7 +92,8 @@ class ValueSource(object):
                 Cores: 1,
                 SDRAM: regions.utils.sizeof_regions(self.regions, sl),
             }
-            vsl = VertexSlice(sl, get_application("value_source"), resources)
+            vsl = VertexSlice(sl, self._label, get_application("value_source"),
+                              resources)
             self.vertices.append(vsl)
 
         # Return the vertices and callback methods

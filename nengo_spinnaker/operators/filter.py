@@ -80,7 +80,7 @@ class Filter(object):
     twice as many packets as previously (one set of packets for each
     column-wise division) and to perform some additions.
     """
-    def __init__(self, size_in, max_cols=128, max_rows=64):
+    def __init__(self, size_in, label, max_cols=128, max_rows=64):
         """Create a new parallel Filter.
 
         Parameters
@@ -101,7 +101,7 @@ class Filter(object):
         # less than max_cols.
         self.size_in = size_in
         n_groups = (size_in // max_cols) + (1 if size_in % max_cols else 0)
-        self.groups = tuple(FilterGroup(sl, max_rows) for sl in
+        self.groups = tuple(FilterGroup(sl, max_rows, "interposer") for sl in
                             divide_slice(slice(0, size_in), n_groups))
 
     def make_vertices(self, model, n_steps):
@@ -159,7 +159,7 @@ class FilterGroup(object):
     """Portion of the columns of the transform applied by a filter, may extend
     across multiple chips.
     """
-    def __init__(self, column_slice, max_rows):
+    def __init__(self, column_slice, max_rows, label):
         """Create a new group of filter cores.
 
         Parameters
@@ -171,6 +171,7 @@ class FilterGroup(object):
         self.column_slice = column_slice
         self.size_in = column_slice.stop - column_slice.start
         self.max_rows = max_rows
+        self._label = label
 
     def make_vertices(self, output_signals, machine_timestep, filter_region,
                       filter_routing_region):
@@ -207,7 +208,7 @@ class FilterGroup(object):
 
             # Build all the vertices
             self.cores = [
-                FilterCore(self.column_slice, out_slice,
+                FilterCore(self._label, self.column_slice, out_slice,
                            transform_region, keys, output_slices,
                            machine_timestep,
                            filter_region, filter_routing_region) for
@@ -229,7 +230,7 @@ class FilterCore(Vertex):
     """Portion of the rows of the transform assigned to a parallel filter
     group, represents the load assigned to a single processing core.
     """
-    def __init__(self, column_slice, output_slice,
+    def __init__(self, label, column_slice, output_slice,
                  transform_region, output_keys, output_slices,
                  machine_timestep, filter_region, filter_routing_region):
         """Allocate a portion of the overall matrix to a single processing
@@ -301,6 +302,7 @@ class FilterCore(Vertex):
         )
 
         super(FilterCore, self).__init__(
+            label=self._label,
             application=get_application("filter"),
             resources={Cores: 1, SDRAM: sdram_usage}
         )

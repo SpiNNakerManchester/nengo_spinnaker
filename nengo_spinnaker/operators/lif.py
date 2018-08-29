@@ -444,7 +444,7 @@ class EnsembleLIF(object):
             cluster = EnsembleCluster(sl, self.ensemble.size_in,
                                       encoders_with_gain.shape[1], size_out,
                                       size_learnt_out, n_learnt_input_signals,
-                                      ens_regions)
+                                      ens_regions, label=self._label)
             self.clusters.append(cluster)
 
             # Get the vertices for the cluster
@@ -623,7 +623,7 @@ class EnsembleLIF(object):
 
 class EnsembleCluster(object):
     def __init__(self, neuron_slice, size_in, encoder_width, size_out,
-                 size_learnt_out, n_learnt_input_signals, regions):
+                 size_learnt_out, n_learnt_input_signals, regions, label):
         """Create a new cluster of collaborating cores."""
         self.neuron_slice = neuron_slice
         self.regions = regions
@@ -634,6 +634,7 @@ class EnsembleCluster(object):
         self.size_out = size_out
         self.size_learnt_out = size_learnt_out
         self.n_learnt_input_signals = n_learnt_input_signals
+        self._label = label
 
     def make_vertices(self, cycles):
         """Partition the neurons onto multiple cores."""
@@ -663,7 +664,7 @@ class EnsembleCluster(object):
         for i, (inp, _, output, learnt) in enumerate(all_slices):
             # Create the vertex
             vertex = EnsembleSlice(i, self.neuron_slices, inp, output, learnt,
-                                   self.regions)
+                                   self.regions, label=self._label)
 
             # Add to the list of vertices
             self.vertices.append(vertex)
@@ -754,7 +755,7 @@ class EnsembleSlice(Vertex):
     }
 
     def __init__(self, vertex_index, cluster_slices, input_slice, output_slice,
-                 learnt_output_slice, ens_regions):
+                 learnt_output_slice, ens_regions, label):
         """Create a new slice of an Ensemble.
 
         Parameters
@@ -775,6 +776,7 @@ class EnsembleSlice(Vertex):
         self.output_slice = output_slice
         self.learnt_output_slice = learnt_output_slice
         self.regions = ens_regions
+        self._label = label
 
         # Get the specific neural slice we care about and information regarding
         # the rest of the vertices in this cluster.
@@ -817,8 +819,15 @@ class EnsembleSlice(Vertex):
             # If profiling then use the profiled version of the application
             application += "_profiled"
 
-        super(EnsembleSlice, self).__init__(get_application(application),
+        super(EnsembleSlice, self).__init__(self._label, get_application(
+            application),
                                             {Cores: 1, SDRAM: sdram_usage})
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self.__repr__()
 
     def load_to_machine(self, netlist, shared_input_vector,
                         shared_learnt_input_vector, shared_spike_vector,

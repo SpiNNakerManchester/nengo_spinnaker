@@ -182,9 +182,11 @@ class Netlist(object):
         # Build and load the routing tables, first by building a mapping from
         # nets to keys and masks.
         logger.debug("Loading routing tables")
-        net_keys = {n: (ks.get_value(tag=self.keyspaces.routing_tag),
-                        ks.get_mask(tag=self.keyspaces.routing_tag))
-                    for n, ks in iteritems(self.net_keyspaces)}
+        net_keys = dict()
+        for n, ks in iteritems(self.net_keyspaces):
+            key = ks.get_value(tag=self.keyspaces.routing_tag)
+            mask = ks.get_mask(tag=self.keyspaces.routing_tag)
+            net_keys[n] = (key, mask)
 
         routing_tables = routing_tree_to_tables(self.routes, net_keys)
         target_lengths = build_routing_table_target_lengths(system_info)

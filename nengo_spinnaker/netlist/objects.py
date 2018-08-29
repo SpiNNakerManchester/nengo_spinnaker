@@ -39,12 +39,19 @@ class Vertex(object):
     cluster : int or None
         Index of the cluster the vertex is a part of.
     """
-    def __init__(self, application=None, resources=dict()):
+    def __init__(self, label, application=None, resources=dict()):
         """Create a new Vertex.
         """
         self.application = application
         self.resources = dict(resources)
         self.cluster = None
+        self._label = label
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self._label
 
 
 class VertexSlice(Vertex):
@@ -62,6 +69,6 @@ class VertexSlice(Vertex):
         Slice of the unit of computation which is represented by this vertex
         slice.
     """
-    def __init__(self, slice, application=None, resources=dict()):
-        super(VertexSlice, self).__init__(application, resources)
+    def __init__(self, slice, label, application=None, resources=dict()):
+        super(VertexSlice, self).__init__(label, application, resources)
         self.slice = slice

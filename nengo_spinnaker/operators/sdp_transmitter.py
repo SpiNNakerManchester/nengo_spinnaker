@@ -14,12 +14,13 @@ class SDPTransmitter(object):
     """An operator which receives multicast packets, performs filtering and
     transmits the filtered vector as an SDP packet.
     """
-    def __init__(self, size_in):
+    def __init__(self, size_in, label):
         self.size_in = size_in
         self._vertex = None
         self._sys_region = None
         self._filter_region = None
         self._routing_region = None
+        self._label = label
 
     def make_vertices(self, model, *args, **kwargs):
         """Create vertices that will simulate the SDPTransmitter."""
@@ -42,7 +43,7 @@ class SDPTransmitter(object):
         }
 
         # Create the vertex
-        self._vertex = Vertex(get_application("tx"), resources)
+        self._vertex = Vertex(self._label, get_application("tx"), resources)
 
         # Return the netlist specification
         return netlistspec((self._vertex, ),  # Tuple is required

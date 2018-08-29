@@ -70,7 +70,8 @@ class Ethernet(NodeIOController):
         """
         # Create a new SDPTransmitter if there isn't already one for the Node
         if connection.post_obj not in self._sdp_transmitters:
-            transmitter = SDPTransmitter(connection.post_obj.size_in)
+            transmitter = SDPTransmitter(connection.post_obj.size_in,
+                                         connection.post_obj.label)
             self._sdp_transmitters[connection.post_obj] = transmitter
             model.extra_operators.append(transmitter)
 

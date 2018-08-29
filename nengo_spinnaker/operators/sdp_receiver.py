@@ -67,7 +67,7 @@ class SDPReceiver(object):
 
             # Create the vertex
             v = self.connection_vertices[transmission_params] = \
-                Vertex(get_application("rx"), resources)
+                Vertex(self._label, get_application("rx"), resources)
             self._sys_regions[v] = sys_region
             self._key_regions[v] = keys_region
 

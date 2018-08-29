@@ -75,7 +75,7 @@ class ValueSink(object):
         )
         self.vertices = tuple(
             ValueSinkVertex(model.machine_timestep, n_steps, sl, filter_region,
-                            filter_routing_region) for sl in
+                            filter_routing_region, self._label) for sl in
             divide_slice(slice(0, self.size_in), n_vertices)
         )
 
@@ -125,9 +125,10 @@ class ValueSink(object):
 
 class ValueSinkVertex(Vertex):
     def __init__(self, timestep, n_steps, input_slice,
-                 filter_region, filter_routing_region):
+                 filter_region, filter_routing_region, label):
         """Create a new vertex for a portion of a value sink."""
         self.input_slice = input_slice
+        self._label = label
 
         # Store the pre-existing regions and create new regions
         self.regions = {
@@ -151,8 +152,15 @@ class ValueSinkVertex(Vertex):
             Cores: 1,
             SDRAM: sizeof_regions_named(self.regions, self.region_arguments)
         }
-        super(ValueSinkVertex, self).__init__(get_application("value_sink"),
+        super(ValueSinkVertex, self).__init__(self._label, get_application(
+            "value_sink"),
                                               resources)
+
+    def __repr__(self):
+        return self._label
+
+    def __str__(self):
+        return self._label
 
     def accepts_signal(self, signal_params, transmission_params):
         """Choose whether to receive this signal or not."""
